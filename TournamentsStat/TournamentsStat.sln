@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2015
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PSStatBrowser", "PSStatBrowser\PSStatBrowser.csproj", "{9AEC7D01-4F80-4BC2-90E3-615B77244C64}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PSStatBrowserConsole", "PSStatBrowserConsole\PSStatBrowserConsole.csproj", "{3D382D70-B7D4-4EC7-966C-D0EAA423F0BC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9AEC7D01-4F80-4BC2-90E3-615B77244C64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9AEC7D01-4F80-4BC2-90E3-615B77244C64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9AEC7D01-4F80-4BC2-90E3-615B77244C64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9AEC7D01-4F80-4BC2-90E3-615B77244C64}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D382D70-B7D4-4EC7-966C-D0EAA423F0BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D382D70-B7D4-4EC7-966C-D0EAA423F0BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D382D70-B7D4-4EC7-966C-D0EAA423F0BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D382D70-B7D4-4EC7-966C-D0EAA423F0BC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {501E5551-B58C-457A-BDF4-D04C57AEB500}
+	EndGlobalSection
+EndGlobal
