@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace PSStatBrowserConsole.Entities
 {
-    class Tournament : Entity
+    class Deposit : Entity
     {
+        public override string ToString()
+        {
+            return $"{Time} - Deposit: {Amount}, Balance: {Balance}";
+        }
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PSStatBrowserConsole.Entities
 {
-    class Tournament : Entity
+    class Reward : Entity
     {
     }
 }
