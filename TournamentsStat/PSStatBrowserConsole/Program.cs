@@ -16,15 +16,20 @@ namespace PSStatBrowserConsole
         {
             try
             {
-                FileStream dataFile = File.Open("History.csv", FileMode.Open);
-                StreamReader strReader = new StreamReader(dataFile);
+                StreamReader fileReader = File.OpenText("History.csv");
+                int counter = 0;
 
-                int count = 0;
-                strReader.ReadLine();
+                while (!fileReader.EndOfStream)
+                {
+                    string line = fileReader.ReadLine();
+                    Console.WriteLine(line);
+                    ParseLine(line);
 
-                while (!strReader.EndOfStream)
-                { 
-                    ParseLine(strReader.ReadLine());
+                    if(++counter == 15)
+                    {
+                        Console.ReadLine();
+                        counter = 0;
+                    }
                 }
 
                 Console.WriteLine($"{_infoSrc.Count} events loaded");
