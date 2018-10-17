@@ -8,6 +8,8 @@ namespace PSStatBrowserConsole.Entities
 {
     abstract class Entity
     {
+        public string InfoString { get; set; }
+
         public enum ActionType { Touranment, Deposit, Other}
 
         public int ID { get; set; }
@@ -36,9 +38,9 @@ namespace PSStatBrowserConsole.Entities
             return null;
         }
 
-        //public static Entity ParseAction(string infoStr)
-        //{
-        //    return result;
-        //}
+        public override string ToString()
+        {
+            return InfoString;
+        }
     }
 }

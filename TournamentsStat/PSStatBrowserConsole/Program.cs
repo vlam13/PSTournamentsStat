@@ -17,19 +17,13 @@ namespace PSStatBrowserConsole
             try
             {
                 StreamReader fileReader = File.OpenText("History.csv");
-                int counter = 0;
+                //int counter = 0;
 
                 while (!fileReader.EndOfStream)
                 {
                     string line = fileReader.ReadLine();
-                    Console.WriteLine(line);
+                    //Console.WriteLine(line);
                     ParseLine(line);
-
-                    if(++counter == 15)
-                    {
-                        Console.ReadLine();
-                        counter = 0;
-                    }
                 }
 
                 Console.WriteLine($"{_infoSrc.Count} events loaded");
@@ -49,11 +43,17 @@ namespace PSStatBrowserConsole
 
                     switch (cmd)
                     {
+                        case "all":
+                            PrintAllActions();
+                            break;
                         case "balance":
                             Console.WriteLine($"Current Balance: {balance}");
                             break;
                         case "deposit":
                             GiveDepositInfo();
+                            break;
+                        case "tinfo":
+                            ShowTournaments();
                             break;
                         case "exit":
                         case "e":
@@ -65,10 +65,30 @@ namespace PSStatBrowserConsole
                     }
                 }
             }
-            catch(Exception e)
+            catch(Exception)
             {
                 Console.WriteLine("File not found or wrong!");
             }
+        }
+
+        private static void PrintAllActions()
+        {
+            foreach (var item in _infoSrc)
+            {
+                Console.WriteLine(item);
+            }
+        }
+
+        private static void ShowTournaments()
+        {
+            var tournaments = _infoSrc.Where(x => x is Tournament);
+            //int buyIn = 0;
+            foreach (var tournm in tournaments)
+            {
+                Console.WriteLine(tournm);
+            }
+
+            Console.WriteLine($"Overall tournamets count:{tournaments.Count()}");
         }
 
         private static void GiveDepositInfo()
@@ -99,9 +119,7 @@ namespace PSStatBrowserConsole
         {
             var attributes = line.Split(',');
 
-            DateTime time;
-
-            if (!DateTime.TryParse(attributes[0], out time))
+            if (!DateTime.TryParse(attributes[0], out DateTime time))
                 return false;
 
             var newEvent = Entity.GetEntity(attributes[1]);
@@ -109,10 +127,11 @@ namespace PSStatBrowserConsole
             if (newEvent == null)
                 return false;
 
+            newEvent.InfoString = line;
             newEvent.Time = time;
+
             var amount = attributes[5].Trim('"').Replace('.', ',');
-            float val;
-            float.TryParse(amount, out val);
+            float.TryParse(amount, out float val);
 
             newEvent.Amount = val;
 
