@@ -260,3 +260,4 @@ paket-files/
 __pycache__/
 *.pyc
 /TournamentsStat/PSStatBrowserConsole/_History1.csv
+/TournamentsStat/PSStatBrowserConsole/_History2.csv

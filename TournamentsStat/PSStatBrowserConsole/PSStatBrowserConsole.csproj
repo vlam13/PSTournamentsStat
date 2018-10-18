@@ -42,10 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Entities\Deposit.cs" />
-    <Compile Include="Entities\Entity.cs" />
-    <Compile Include="Entities\Reward.cs" />
-    <Compile Include="Entities\Tournament.cs" />
+    <Compile Include="Entities\PSAction.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

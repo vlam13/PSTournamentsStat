@@ -1,73 +1,81 @@
-﻿using PSStatBrowserConsole.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static PSStatBrowserConsole.PSAction;
 
 namespace PSStatBrowserConsole
 {
     class Program
     {
-        public List<Tournament> TrnmtsList { get; set; }
+        public enum Commands { all, balance, show, exit };
+
+        static List<PSAction> _infoSrc = new List<PSAction>();
 
         static void Main(string[] args)
         {
             try
             {
                 StreamReader fileReader = File.OpenText("History.csv");
-                //int counter = 0;
 
                 while (!fileReader.EndOfStream)
                 {
-                    string line = fileReader.ReadLine();
-                    //Console.WriteLine(line);
-                    ParseLine(line);
+                    ParseLine(fileReader.ReadLine());
                 }
 
                 Console.WriteLine($"{_infoSrc.Count} events loaded");
-
-                //Console.WriteLine($"{count} lines");
-                //Console.WriteLine($"Buy In: {buyIn}");
-                //Console.WriteLine($"Income: {income}");
-                //Console.WriteLine($"Profit: {income + buyIn}");
-                //Console.WriteLine($"Deposit: {deposit
-
-                bool exit = false;
-
-                while(!exit)
-                {
-                    PrintPrompt();
-                    var cmd = Console.ReadLine();
-
-                    switch (cmd)
-                    {
-                        case "all":
-                            PrintAllActions();
-                            break;
-                        case "balance":
-                            Console.WriteLine($"Current Balance: {balance}");
-                            break;
-                        case "deposit":
-                            GiveDepositInfo();
-                            break;
-                        case "tinfo":
-                            ShowTournaments();
-                            break;
-                        case "exit":
-                        case "e":
-                            exit = true;
-                            break;
-                        default:
-                            Console.WriteLine("Unknow command. Type 'exit' or 'e' to exit.");
-                            break;
-                    }
-                }
             }
-            catch(Exception)
+            catch (Exception)
             {
                 Console.WriteLine("File not found or wrong!");
+            }
+
+            bool exit = false;
+
+            while (!exit)
+            {
+                try
+                {
+                    PrintPrompt();
+                    var input = Console.ReadLine();
+                    args = input.Split(' ');
+                    string cmd = args[0].Trim();
+
+                    if (Enum.TryParse(cmd, out Commands command))
+                    {
+                        switch (command)
+                        {
+                            case Commands.all:
+                                PrintAllActions();
+                                break;
+                            case Commands.balance:
+                                Console.WriteLine($"Current Balance: {balance}");
+                                break;
+                            case Commands.show:
+                                Show(args);
+                                break;
+                            case Commands.exit:
+                                exit = true;
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Unknow command.");
+                        Console.WriteLine("Commands list:");
+
+                        foreach (var com in Enum.GetValues(typeof(Commands)))
+                        {
+                            Console.WriteLine(com.ToString());
+                        }
+                    }
+                }
+                catch(Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
             }
         }
 
@@ -79,28 +87,36 @@ namespace PSStatBrowserConsole
             }
         }
 
-        private static void ShowTournaments()
+        private static void Show(string[] args)
         {
-            var tournaments = _infoSrc.Where(x => x is Tournament);
-            //int buyIn = 0;
-            foreach (var tournm in tournaments)
+            if (args.Count() < 2)
             {
-                Console.WriteLine(tournm);
+                Console.WriteLine("Command argument is missing");
+                Console.Write("{ ");
+                foreach (var com in Enum.GetValues(typeof(ActionType)))
+                {
+                    Console.Write(com.ToString() + " ");
+                }
+                Console.Write("}");
+                Console.WriteLine();
+                return;
             }
 
-            Console.WriteLine($"Overall tournamets count:{tournaments.Count()}");
-        }
+            string argm = args[1].Trim();
 
-        private static void GiveDepositInfo()
-        {
-            var depos = _infoSrc.Select(x => x).Where(x => x.GetType() == typeof(Deposit));
-            Console.WriteLine($"Was made {depos.Count()} deposit");
-            foreach (var dep in depos)
-                Console.WriteLine(dep);
+            if (Enum.TryParse(argm, out ActionType actType))
+            {
+                var actions = _infoSrc.Where(x => x.Type == actType);
 
-            Console.WriteLine($"Maximum: {depos.Max(x => x.Amount)}");
-            Console.WriteLine($"Minimum: {depos.Min(x => x.Amount)}");
-            Console.WriteLine($"Sum: {depos.Sum(x => x.Amount)}");
+                foreach (var act in actions)
+                {
+                    Console.WriteLine(act);
+                }
+
+                Console.WriteLine($"{actions.Count()} entries");
+            }
+            else
+                Console.WriteLine("Unknowm argument");
         }
 
         public static void PrintPrompt()
@@ -108,12 +124,10 @@ namespace PSStatBrowserConsole
             Console.Write("> ");
         }
 
-        static float buyIn = 0;
-        static float income = 0;
-        static float deposit = 0;
+        //static float buyIn = 0;
+        //static float income = 0;
+        //static float deposit = 0;
         static float balance = 0;
-
-        static List<Entity> _infoSrc = new List<Entity>();
 
         private static bool ParseLine(string line)
         {
@@ -122,10 +136,7 @@ namespace PSStatBrowserConsole
             if (!DateTime.TryParse(attributes[0], out DateTime time))
                 return false;
 
-            var newEvent = Entity.GetEntity(attributes[1]);
-
-            if (newEvent == null)
-                return false;
+            var newEvent = PSAction.GetEntity(attributes[1]);
 
             newEvent.InfoString = line;
             newEvent.Time = time;
@@ -137,39 +148,9 @@ namespace PSStatBrowserConsole
 
             _infoSrc.Add(newEvent);
 
-            float.TryParse(attributes[8].Trim('"').Replace('.',','), out balance);
+            float.TryParse(attributes[8].Trim('"').Replace('.', ','), out balance);
 
             newEvent.Balance = balance;
-
-            return true;
-        }
-
-        private static bool _ParseLine(string line)
-        {
-            var dep = line.Contains("Deposit");
-
-            if (!line.Contains("Tournament") && !dep)
-                return false;
-
-            var attributes = line.Split(',');
-
-            //if (!attributes[2].Contains("Spin & Go"))
-            //    return false;
-
-            var value = attributes[5].Trim('"');
-            float res = 0;
-
-            if (float.TryParse(value, out res))
-            {
-                if (dep)
-                    deposit += res / 100;
-                else if (res < 0)
-                    buyIn += res/100;
-                else
-                    income += res/100;
-            }
-            else
-                return false;
 
             return true;
         }
