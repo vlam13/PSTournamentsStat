@@ -18,11 +18,12 @@ namespace PSStatBrowserConsole
         {
             try
             {
-                StreamReader fileReader = File.OpenText("History.csv");
-
-                while (!fileReader.EndOfStream)
+                using (StreamReader fileReader = File.OpenText("History.csv"))
                 {
-                    ParseLine(fileReader.ReadLine());
+                    while (!fileReader.EndOfStream)
+                    {
+                        ParseLine(fileReader.ReadLine());
+                    }
                 }
 
                 Console.WriteLine($"{_infoSrc.Count} events loaded");
